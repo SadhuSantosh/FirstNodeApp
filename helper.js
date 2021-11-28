@@ -12,6 +12,21 @@ async function addMovie(data) {
         .collection("movies")
         .insertMany(data);
 }
+
+async function addUser(data) {
+    return await client
+        .db("movies")
+        .collection("user")
+        .insertOne(data);
+}
+
+async function getUserbyUsername(username) {
+    return await client
+        .db("movies")
+        .collection("user")
+        .findOne({ username: username });
+}
+
 async function deleteMovieById(id) {
     return await client
         .db("movies")
@@ -32,4 +47,4 @@ async function getMovies(filter) {
         .toArray();
 }
 
-export { getMovies, getMovieById, deleteMovieById, addMovie, updateMovieById };
+export { getMovies, getMovieById, deleteMovieById, addMovie, updateMovieById, addUser, getUserbyUsername };

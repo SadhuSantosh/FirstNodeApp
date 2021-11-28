@@ -3,6 +3,8 @@ import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
 import { getMovies, getMovieById, deleteMovieById, addMovie, updateMovieById } from "./helper.js";
 import { movieRouter } from "./Routes/movieRouter.js";
+import { userRouter } from "./Routes/userRouter.js";
+import cors from "cors";
 
 const app = express();
 
@@ -10,6 +12,7 @@ dotenv.config();
 
 const MONGO_URL = process.env.MONGO_URL;
 
+app.use(cors());
 app.use(express.json());
 //to convert the body from request to JSON,it acts as a middleware, jumps everywhere and converts the data to JSON.
 
@@ -29,6 +32,7 @@ app.get("/", (req, res) => {
 })
 
 app.use("/movies",movieRouter);
+app.use("/user",userRouter);
 
 app.listen(PORT, () => console.log("APP is Started on port", PORT));
 
