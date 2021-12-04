@@ -18,7 +18,7 @@ router.route("/signup")
             :
             (isStrongPassword
                 ?
-                (await addUser({ username, password: hashedPassword }) && res.send({ message: `${username} added sucessfully` }))
+                (await addUser({ username, password: hashedPassword, salt: salt }) && res.send({ message: `${username} added sucessfully` }))
                 :
                 res.send(
                     {
