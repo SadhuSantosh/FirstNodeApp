@@ -1,6 +1,8 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import { addUser, getUserbyUsername } from "../helper.js";
+import jwt from 'jsonwebtoken';
+
 
 const router = express.Router();
 const passwordPattern = /(?=.*[A-Z]+)(?=.*[a-z]+)(?=.*[0-9]+)(?=.*[!@#$*]).{8,}/g;
@@ -14,18 +16,40 @@ router.route("/signup")
         const isStrongPassword = password.match(passwordPattern);
         isUserExists
             ?
-            res.send({ message: `The user with username ${username} already exists` })
+            res.status(400).send({ message: `The user with username ${username} already exists` })
             :
             (isStrongPassword
                 ?
                 (await addUser({ username, password: hashedPassword, salt: salt }) && res.send({ message: `${username} added sucessfully` }))
                 :
-                res.send(
+                res.status(400).send(
                     {
                         message: "password is not strong, it should contain minimum of 8 characters including a capital letter, small letter, special character and a number. Ex:Password@123"
                     })
             )
     })
+
+    router.route("/login")
+    .post(async (req, res) => {
+        const { username, password } = req.body;
+        const user = await getUserbyUsername(username);
+        const isPasswordMatched=await bcrypt.compare(password,user.password);
+        
+
+        !user
+            ?
+            res.status(400).send({ message: `Invalid Credentials` })
+            :
+            (isPasswordMatched
+                ?
+                 res.send({ message: `Successful login`,token:jwt.sign({id:user._id},process.env.SECRET_KEY) })
+                :
+                res.status(400).send(
+                    {
+                        message: "Invalid Credentials"
+                    })
+            )
+    })    
 
 // Task
 // Store the data in users collection
