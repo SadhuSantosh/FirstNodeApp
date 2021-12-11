@@ -34,15 +34,14 @@ router.route("/signup")
         const { username, password } = req.body;
         const user = await getUserbyUsername(username);
         const isPasswordMatched=await bcrypt.compare(password,user.password);
-        
-
+    
         !user
             ?
             res.status(400).send({ message: `Invalid Credentials` })
             :
             (isPasswordMatched
                 ?
-                 res.send({ message: `Successful login`,token:jwt.sign({id:user._id},process.env.SECRET_KEY) })
+                 res.send({ message: `Successful login`,token: jwt.sign({id:user._id},process.env.SECRET_KEY) })
                 :
                 res.status(400).send(
                     {
