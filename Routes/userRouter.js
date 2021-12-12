@@ -34,7 +34,8 @@ router.route("/signup")
         const { username, password } = req.body;
         const user = await getUserbyUsername(username);
         const isPasswordMatched=await bcrypt.compare(password,user.password);
-    
+        console.log(password,user,process.env.SECRET_KEY,"Consoling the secret key");
+
         !user
             ?
             res.status(400).send({ message: `Invalid Credentials` })
